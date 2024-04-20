@@ -16,9 +16,11 @@ import { Country, PhoneNumberInputProps } from "../types/CountryData";
 export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   onPhoneNumberChange,
   errors,
+  setCode,
+  setNumber,
+  number,
+  code,
 }) => {
-  const [countryCode, setCountryCode] = useState("+234");
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [showCountryPicker, setShowCountryPicker] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [countries, setCountries] = useState<Country[]>([]);
@@ -29,13 +31,13 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   }, []);
 
   const handlePhoneNumberChange = (number: string) => {
-    setPhoneNumber(number);
-    onPhoneNumberChange(number, countryCode);
+    setCode(number);
+    onPhoneNumberChange(number, code);
   };
 
   const selectCountryCode = (code: string) => {
-    setCountryCode(code);
-    onPhoneNumberChange(phoneNumber, code);
+    setCode(code);
+    onPhoneNumberChange(number, code);
     setShowCountryPicker(false);
   };
 
@@ -56,14 +58,9 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
         >
           <View style={styles.countryCodeContainer}>
             <Text style={{ fontSize: 20 }}>
-              {
-                countries.find((country) => country.dial_code === countryCode)
-                  ?.flag
-              }
+              {countries.find((country) => country.dial_code === code)?.flag}
             </Text>
-            <Text style={{ fontSize: 20, color: Colors.gray }}>
-              {countryCode}
-            </Text>
+            <Text style={{ fontSize: 20, color: Colors.gray }}>{code}</Text>
           </View>
           <MaterialIcons
             name="keyboard-arrow-down"
@@ -96,7 +93,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
             renderItem={({ item }) => (
               <TouchableOpacity
                 onPress={() => {
-                  onPhoneNumberChange(phoneNumber, item.dial_code);
+                  onPhoneNumberChange(number, item.dial_code);
                   selectCountryCode(item.dial_code);
                 }}
               >
@@ -118,17 +115,7 @@ export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
 };
 
 const styles = StyleSheet.create({
-  textInputContainer: {
-    // flexDirection: "row",
-    // alignItems: "center",
-    // borderColor: Colors.gray,
-    // borderWidth: 50,
-    // borderRadius: 10,
-    // paddingVertical: 16,
-    // paddingLeft: 16,
-    // width: "90%",
-    // marginBottom: 20,
-  },
+  textInputContainer: {},
   countryCodeContainer: {
     flexDirection: "row",
     alignItems: "center",

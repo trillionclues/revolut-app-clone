@@ -13,10 +13,14 @@ import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
 import { PhoneNumberInput } from "./components/PhoneNumberInput";
 import Colors from "@/constants/Colors";
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
+import { useSignUp } from "@clerk/clerk-expo";
 
 const Page = () => {
+  const [countryCode, setCountryCode] = useState("+234");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const { signUp } = useSignUp();
+  const router = useRouter();
 
   const handlePhoneNumberSelect = (
     phoneNumber: string,
@@ -25,8 +29,26 @@ const Page = () => {
     console.log("handlePhoneNumberSelect", phoneNumber, countryCode);
   };
 
+  // useEffect(() => {
+  //   if (user) {
+  //     // If user is already signed in, redirect to a different page
+  //     router.push("/dashboard");
+  //   }
+  // }, [user]);
+
   const onSignUp = async () => {
-    console.log("onSignUp");
+    const fullPhoneNumber = `${countryCode}${phoneNumber}`;
+    try {
+      // await signUp!.create({
+      //   phoneNumber: fullPhoneNumber,
+      // });
+      router.push({
+        pathname: "/verify/[phone]",
+        params: { phone: fullPhoneNumber },
+      });
+    } catch (error) {
+      console.log("Error signing up: ", error);
+    }
   };
 
   return (
@@ -44,14 +66,19 @@ const Page = () => {
 
           <View style={styles.inputContainer}>
             <View style={styles.input}>
-              <PhoneNumberInput onPhoneNumberChange={handlePhoneNumberSelect} />
+              <PhoneNumberInput
+                onPhoneNumberChange={handlePhoneNumberSelect}
+                setCode={setCountryCode}
+                setNumber={setPhoneNumber}
+                number={phoneNumber}
+                code={countryCode}
+              />
             </View>
             <TextInput
               style={[styles.input, { flex: 1 }]}
               placeholder="Mobile Number"
               placeholderTextColor={Colors.gray}
               keyboardType="numeric"
-              // autoFocus
               autoCapitalize="none"
               autoCorrect={false}
               value={phoneNumber}
