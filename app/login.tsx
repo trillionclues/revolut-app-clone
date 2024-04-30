@@ -35,7 +35,7 @@ const Page = () => {
     phoneNumber: string,
     countryCode: string
   ) => {
-    console.log("handlePhoneNumberSelect", phoneNumber, countryCode);
+    // console.log("handlePhoneNumberSelect", phoneNumber, countryCode);
   };
 
   const onSignIn = async (type: SignInType) => {

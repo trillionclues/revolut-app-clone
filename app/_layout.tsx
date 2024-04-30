@@ -1,5 +1,5 @@
 import Colors from "@/constants/Colors";
-import { ClerkProvider } from "@clerk/clerk-expo";
+import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
@@ -40,6 +40,8 @@ SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
   const router = useRouter();
+  // clerk conditional initialization
+  const { isLoaded, isSignedIn } = useAuth();
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -55,6 +57,12 @@ const InitialLayout = () => {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
+
+  useEffect(() => {
+    console.log("====================================");
+    console.log(isSignedIn);
+    console.log("====================================");
+  }, [isSignedIn]);
 
   if (!loaded) {
     return null;
@@ -109,6 +117,22 @@ const InitialLayout = () => {
       <Stack.Screen
         name="help"
         options={{ title: "Help", presentation: "modal" }}
+      />
+      <Stack.Screen
+        name="verify/[phone]"
+        options={{
+          title: "",
+          headerBackTitle: "",
+          headerShadowVisible: false,
+          headerStyle: {
+            backgroundColor: Colors.background,
+          },
+          headerLeft: () => (
+            <TouchableOpacity onPress={router.back}>
+              <Ionicons name="arrow-back" size={34} color={Colors.dark} />
+            </TouchableOpacity>
+          ),
+        }}
       />
     </Stack>
   );
