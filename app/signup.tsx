@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
-import { PhoneNumberInput } from "./components/PhoneNumberInput";
+import { PhoneNumberInput } from "../components/PhoneNumberInput";
 import Colors from "@/constants/Colors";
 import { Link, useRouter } from "expo-router";
 import { useSignUp } from "@clerk/clerk-expo";
@@ -38,6 +38,7 @@ const Page = () => {
 
   const onSignUp = async () => {
     const fullPhoneNumber = `${countryCode}${phoneNumber}`;
+    console.log(fullPhoneNumber);
     try {
       await signUp!.create({
         phoneNumber: fullPhoneNumber,

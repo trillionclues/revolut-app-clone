@@ -11,7 +11,7 @@ import {
 import countryData from "@/assets/data/countries.json";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
-import { Country, PhoneNumberInputProps } from "../types/CountryData";
+import { Country, PhoneNumberInputProps } from "../app/types/CountryData";
 
 export const PhoneNumberInput: React.FC<PhoneNumberInputProps> = ({
   onPhoneNumberChange,

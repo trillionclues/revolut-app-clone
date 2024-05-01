@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
-import { PhoneNumberInput } from "./components/PhoneNumberInput";
+import { PhoneNumberInput } from "../components/PhoneNumberInput";
 import Colors from "@/constants/Colors";
 import { Link, useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";

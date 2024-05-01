@@ -3,13 +3,13 @@ import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
-import { TouchableOpacity } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Text, TouchableOpacity } from "react-native";
 import * as SecureStore from "expo-secure-store";
+import { AuthProvider } from "./providers/AuthProvider";
 const CLERK_PUBLISHABLE_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
 // Cache the Clerk JWT
@@ -30,18 +30,20 @@ const tokenCache = {
     }
   },
 };
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
+// Prevent splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
   const router = useRouter();
   // clerk conditional initialization
   const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
   const [loaded, error] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     ...FontAwesome.font,
@@ -58,14 +60,24 @@ const InitialLayout = () => {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    console.log("====================================");
-    console.log(isSignedIn);
-    console.log("====================================");
-  }, [isSignedIn]);
+  // useEffect(() => {
+  //   if (!isLoaded) return;
 
-  if (!loaded) {
-    return null;
+  //   const isAuthgroup = segments[0] === "(authenticated)";
+
+  //   if (isSignedIn && !isAuthgroup) {
+  //     router.push("/(authenticated)/(tabs)/home");
+  //   } else if (!isSignedIn) {
+  //     router.replace("/");
+  //   }
+
+  //   console.log("====================================");
+  //   console.log(isSignedIn);
+  //   console.log("====================================");
+  // }, [isSignedIn]);
+
+  if (!loaded || !isLoaded) {
+    return <Text>Loading...</Text>;
   }
 
   return (
@@ -134,6 +146,10 @@ const InitialLayout = () => {
           ),
         }}
       />
+      <Stack.Screen
+        name="(authenticated)/(tabs)"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 };
@@ -145,8 +161,10 @@ const RootLayoutNav = () => {
         publishableKey={CLERK_PUBLISHABLE_KEY!}
         tokenCache={tokenCache}
       >
-        <StatusBar style="light" />
-        <InitialLayout />
+        <AuthProvider>
+          <StatusBar style="light" />
+          <InitialLayout />
+        </AuthProvider>
       </ClerkProvider>
     </>
   );
